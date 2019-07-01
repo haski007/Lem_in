@@ -12,15 +12,30 @@
 
 #include "../includes/lemin.h"
 
-int				parse_farm(t_farm *farm)
+t_list				*save_farm(t_farm *farm)
 {
 	char	*line;
+	t_list	*head;
+	t_list	*tmp;
+	t_list	*p;
 
+	head = NULL;
+	tmp = NULL;
 	get_next_line(0, &line);
 	farm->ants = ft_atoi(line);
 	while (get_next_line(0, &line))
 	{
-		if (ft_strstr(line, "start")
-			
+		if (!head)
+		{
+			head = ft_lstnew(line, ft_strlen(line));
+			p = head;
+		}
+		else
+		{
+			tmp = ft_lstnew(line, ft_strlen(line));
+			p->next = tmp;
+			p = tmp;
+		}
 	}
+	return (head);
 }

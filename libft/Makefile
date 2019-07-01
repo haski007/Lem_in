@@ -88,7 +88,8 @@ SRCS :=		ft_memset.c \
 				ft_u_itoa.c \
 				u_itoa_base.c \
 				get_next_line.c \
-				ft_del.c 
+				ft_del.c \
+				is_whitespace.c
 				#types_a.c \
 				types_b.c \
 				x_type.c \

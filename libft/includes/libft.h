@@ -94,7 +94,7 @@ int					ft_tolower(int c);
 
 typedef struct		s_list
 {
-	void			*content;
+	char			*content;
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
@@ -126,6 +126,8 @@ char				*ft_strrew(char *src);
 char				*ft_u_itoa(unsigned long long int n);
 char				*itoa_base(long long int num, int base);
 char				*u_itoa_base(unsigned short num, int base);
+int             	is_whitespace(char c);
+
 
 int					get_next_line(const int fd, char **line);
 
