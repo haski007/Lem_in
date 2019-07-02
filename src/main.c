@@ -17,8 +17,8 @@ static void		print_all_err(void)
 	int	i;
 
 	i = -1;
-	while (++i < 100)
-		printf("%s\n", strerror(i));
+	while (++i < 107)
+		printf("%d) %s\n", i, strerror(i));
 }
 
 void			paint_farm(t_list *list)
@@ -31,26 +31,25 @@ void			paint_farm(t_list *list)
 	}
 }
 
-// void		paint_rooms(t_rooms room)
-// {
-// 	while ()
-// 	{
-// 		printf("%s x = %d, y = %d\n", room->name, room->x, room->y);
-// 		room = room->next;
-// 	}
-// }
+void		paint_rooms(t_rlist *rlist)
+{
+	while (rlist)
+	{
+		printf("%s %d %d | rank = %d\n", rlist->room->name, rlist->room->x, rlist->room->y, rlist->room->rank);
+		rlist = rlist->next;
+	}
+}
 
 int			main(void)
 {
 	t_farm	farm;
-	t_rooms	room;
+	t_rlist	*rlist;
 	t_list	*list;
 
 	list = save_farm(&farm);
-	// if (!list)
-	// 	ft_putstr(strerror(9));
-	print_all_err();
-	// paint_rooms(room);
+	rlist = get_rooms(list);
+	// print_all_err();
+	paint_rooms(rlist);
 	// paint_farm(list);
 	return (0);
 }

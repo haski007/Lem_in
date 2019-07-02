@@ -26,18 +26,27 @@ typedef struct 		s_farm
 	int				ants;
 } 					t_farm;
 
-typedef struct 		s_rooms
+typedef struct		s_room
 {
-	char			**rooms;
-}					t_rooms;
+	char			*name;
+	int				rank;
+	int				x;
+	int				y;
+	int				value;
+}					t_room;
+
+typedef struct 		s_rlist
+{
+	t_room			*room;
+	struct s_rlist	*next;
+}					t_rlist;
 
 t_list				*save_farm(t_farm *farm);
-t_rooms				*parse_rooms(t_list *list);
-
+t_rlist				*get_rooms(t_list *list);
 
 
 
 void				paint_farm(t_list *list);
-void				paint_rooms(t_rooms *room);
+void				paint_rooms(t_rlist *rlist);
 
 #endif
