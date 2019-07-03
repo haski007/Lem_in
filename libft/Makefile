@@ -15,7 +15,7 @@ OBJDIR :=	.obj/
 INCLD :=	includes/libft.h
 
 CC :=		clang
-CFLAGS :=	-Wall -Wextra -Werror
+CFLAGS :=	-g -Wall -Wextra -Werror
 
 SRCS :=		ft_memset.c \
 				ft_bzero.c \
@@ -89,7 +89,8 @@ SRCS :=		ft_memset.c \
 				u_itoa_base.c \
 				get_next_line.c \
 				ft_del.c \
-				is_whitespace.c
+				is_whitespace.c \
+				ft_strcdup.c
 				#types_a.c \
 				types_b.c \
 				x_type.c \

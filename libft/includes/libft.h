@@ -127,6 +127,8 @@ char				*ft_u_itoa(unsigned long long int n);
 char				*itoa_base(long long int num, int base);
 char				*u_itoa_base(unsigned short num, int base);
 int             	is_whitespace(char c);
+char				*ft_strcdup(const char *s, char c);
+
 
 
 int					get_next_line(const int fd, char **line);

@@ -21,15 +21,29 @@
 
 # include "../libft/includes/libft.h"
 
+# define CONT list->content
+# define NAME rlist->room->name
+# define VALUE rlist->room->value
+# define LLIST rlist->room->llist
+# define TUBE rlist->room->llist->tube
+# define NEXT_LLIST rlist->room->llist->next
+
 typedef struct 		s_farm
 {
 	int				ants;
 } 					t_farm;
 
+typedef struct		s_llist
+{
+	char			*tube;
+	struct s_llist	*next;
+}					t_llist;
+
 typedef struct		s_room
 {
 	char			*name;
-	int				rank;
+	char			rank;
+	t_llist			*llist;
 	int				x;
 	int				y;
 	int				value;
