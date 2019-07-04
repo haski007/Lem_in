@@ -35,8 +35,7 @@ void			paint_rooms(t_rlist *rlist)
 {
 	while (rlist)
 	{
-		// printf("%10s value = %d     | %s:\n", RNAME, RVALUE,  (rlist->room->rank == 2) ? "end" : NULL);
-		printf("%s     | rank = %d:\n", RNAME, rlist->room->rank);
+		printf("%10s value = %d     | %s:\n", RNAME, RVALUE,  (rlist->room->rank == 2) ? "end" : NULL);
 		paint_links(RLLIST);
 		rlist = rlist->next;
 	}

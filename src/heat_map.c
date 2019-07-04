@@ -28,26 +28,28 @@ static void			heat_this(char *tube, t_rlist **rlist, int value)
 void				heat_map(t_rlist **rlist)
 {
     t_rlist		*list;
-	int			i;
+	t_llist		*llist;
 
+	int			i;
+	llist = LLIST;
 	i = 1;
     list = *rlist;
 	while (list)
 	{
 		if (list->room->rank == 2)
 		{
-			while (LLIST)
+			while (llist)
 			{
-				heat_this(LLIST->tube, rlist, i);
-				LLIST = LLIST->next;
+				heat_this(llist->tube, rlist, i);
+				llist = llist->next;
 			}
 		}
 		else if (VALUE == i)
 		{
-			while (LLIST)
+			while (llist)
 			{
-				heat_this(LLIST->tube, rlist, i++);
-				LLIST = LLIST->next;
+				heat_this(llist->tube, rlist, i++);
+				llist = llist->next;
 			}
 			i++;
 		}
