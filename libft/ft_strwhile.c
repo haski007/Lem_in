@@ -1,28 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   ft_strwhile.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pdemian <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/29 14:42:36 by pdemian           #+#    #+#             */
-/*   Updated: 2018/10/29 14:49:32 by pdemian          ###   ########.fr       */
+/*   Created: 2019/07/04 17:19:23 by pdemian           #+#    #+#             */
+/*   Updated: 2019/07/04 17:19:24 by pdemian          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/libft.h"
-
-int		ft_strcmp(const char *s1, const char *s2)
+char	*ft_strwhile(const char *s, int c)
 {
-	unsigned char	*str1;
-	unsigned char	*str2;
+    int     i;
+	char	*str;
 
-	str1 = (s1) ? (unsigned char*)s1 : NULL;
-	str2 = (s2) ? (unsigned char*)s2 : NULL;
-	while (*str1 == *str2 && *str1 && *str2)
-	{
-		str1++;
-		str2++;
-	}
-	return (*str1 - *str2);
+    str = (char*)s;
+    i = 0;
+	while (str[i] != c)
+        i++;
+    str[i] = '\0';
+    while (str[++i])
+        str[i] = '\0';
+	return (str);
 }

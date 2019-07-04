@@ -90,7 +90,8 @@ SRCS :=		ft_memset.c \
 				get_next_line.c \
 				ft_del.c \
 				is_whitespace.c \
-				ft_strcdup.c
+				ft_strcdup.c \
+				ft_strwhile.c
 				#types_a.c \
 				types_b.c \
 				x_type.c \

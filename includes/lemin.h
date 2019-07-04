@@ -22,11 +22,13 @@
 # include "../libft/includes/libft.h"
 
 # define CONT list->content
-# define NAME rlist->room->name
-# define VALUE rlist->room->value
-# define LLIST rlist->room->llist
+# define NAME list->room->name
+# define RNAME rlist->room->name
+# define VALUE list->room->value
+# define RVALUE rlist->room->value
+# define LLIST list->room->llist
+# define RLLIST rlist->room->llist
 # define TUBE rlist->room->llist->tube
-# define NEXT_LLIST rlist->room->llist->next
 
 typedef struct 		s_farm
 {
@@ -57,10 +59,17 @@ typedef struct 		s_rlist
 
 t_list				*save_farm(t_farm *farm);
 t_rlist				*get_rooms(t_list *list);
+t_llist				*newllst(char *name, char *tube);
+t_rlist				*newrlst(t_room *room);
+void				heat_map(t_rlist **rlist);
+
+
+
 
 
 
 void				paint_farm(t_list *list);
 void				paint_rooms(t_rlist *rlist);
+void				paint_links(t_llist *llist);
 
 #endif

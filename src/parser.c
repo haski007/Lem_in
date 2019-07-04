@@ -12,6 +12,15 @@
 
 #include "../includes/lemin.h"
 
+static int 					start_end(char *content)
+{
+	if (ft_strstr(content, "##start"))
+		return (1);
+	else if (ft_strstr(content, "##end"))
+		return (2);
+	return (0);
+}
+
 static t_llist				*get_links(char *name, t_list *list)
 {
 	t_llist	*head;
@@ -19,30 +28,18 @@ static t_llist				*get_links(char *name, t_list *list)
 	t_llist	*p;
 
 	head = NULL;
+	tmp = NULL;
+	p = NULL;
 	while (list)
 	{
-		if (!head)
+		if (!head && ft_strchr(CONT, '-') && ft_strstr(CONT, name))
 		{
-			if (ft_strchr(CONT, '-') && ft_strstr(CONT, name))
-			{
-				if (ft_strcmp(ft_strchr(CONT, '-'), name) == 0)
-				{
-					head->tube = ft_strdup(CONT);
-				}
-				else
-				{
-					head->tube = ft_strdup(ft_strchr(CONT, '-'));
-				}
-				head->next = NULL;
-				p = head;
-			}
+			head = newllst(name, CONT);
+			p = head;
 		}
-		else
+		else if (ft_strchr(CONT, '-') && ft_strstr(CONT, name))
 		{
-			if (ft_strcmp(ft_strchr(CONT, '-'), name) == 0)
-				tmp->tube = ft_strcdup(CONT, '-');
-			else
-				tmp->tube = ft_strdup(ft_strchr(CONT, '-'));
+			tmp = newllst(name, CONT);
 			p->next = tmp;
 			p = tmp;
 		}
@@ -56,6 +53,7 @@ static t_room				*make_room(char *str, char rank, t_list *list)
 	t_room	*room;
 	int		i;
 
+	i = 0;
 	room = (t_room*)malloc(sizeof(t_room));
 	while (str[i] != ' ')
 		i++;
@@ -70,15 +68,6 @@ static t_room				*make_room(char *str, char rank, t_list *list)
 	return (room);
 }
 
-static t_rlist				*newrlst(t_room *room)
-{
-	t_rlist		*list;
-
-	list = (t_rlist*)malloc(sizeof(t_rlist));
-	list->room = room;
-	list->next = NULL;
-	return (list);
-}
 
 t_rlist				*get_rooms(t_list *list)
 {
@@ -93,16 +82,8 @@ t_rlist				*get_rooms(t_list *list)
 		i = 0;
 		if (ft_strchr(CONT, '-'))
 			break ;
-		if (ft_strstr(CONT, "##start"))
-		{
+		if ((i = start_end(CONT)))
 			list = list->next;
-			i++;
-		}
-		else if (ft_strstr(CONT, "##end"))
-		{
-			list = list->next;
-			i = i + 2;
-		}
 		if (!head && CONT[0] != '#')
 		{
 			head = newrlst(make_room(CONT, i, list));
@@ -129,7 +110,6 @@ t_list				*save_farm(t_farm *farm)
 
 	fd = open("easy_farm", O_RDONLY);
 	head = NULL;
-	tmp = NULL;
 	get_next_line(fd, &line);
 	if (!(farm->ants = ft_atoi(line)))
 	{
