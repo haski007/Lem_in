@@ -24,7 +24,7 @@ LFLAGS :=	-lft -L $(LIBDIR)
 
 LIB :=		$(LIBDIR)libft.a	
 INC :=		lemin	
-SRC :=		main parser list_management heat_map
+SRC :=		main parser
 
 INCS :=		$(addprefix $(INCDIR), $(addsuffix .h, $(INC)))
 SRCS :=		$(addprefix $(SRCDIR), $(addsuffix .c, $(SRC)))

@@ -31,57 +31,56 @@ void			paint_farm(t_list *list)
 	}
 }
 
-void			paint_rooms(t_rlist *rlist)
+void			paint_rooms(t_list *rooms)
 {
-	while (rlist)
+	t_room	*room;
+
+	while (rooms)
 	{
-		printf("%10s value = %d     | %s:\n", RNAME, RVALUE,  (rlist->room->rank == 2) ? "end" : NULL);
-		paint_links(RLLIST);
-		rlist = rlist->next;
+		room = (t_room*)(rooms->content);
+		printf("%s\n", room->name);
+		rooms = rooms->next;
 	}
 }
 
-void			paint_links(t_llist *llist)
-{
-	int		i;
+// void			paint_links(t_llist *llist)
+// {
+// 	int		i;
 
-	i = 0;
-	while (llist)
-	{
-		printf("link %d%8s\n", ++i, llist->tube);
-		llist = llist->next;
-	}
-}
+// 	i = 0;
+// 	while (llist)
+// 	{
+// 		printf("link %d%8s\n", ++i, llist->tube);
+// 		llist = llist->next;
+// 	}
+// }
 
-static void		free_lists(t_list **alist, t_rlist **arlist)
+static void		free_list(t_list **rooms)
 {
 	t_list	*list;
 	t_list	*tmp;
 
-	list = *alist;
+	list = *rooms;
 	while (list)
 	{
 		tmp = list->next;
-		ft_strdel(&list->content);
+		ft_bzero(&list->content, sizeof(t_room));
 		free(list);
 		list = tmp;
 	}
-	*alist = NULL;
+	rooms = NULL;
 }
 
 int				main(void)
 {
 	t_farm	farm;
-	t_rlist	*rlist;
-	t_list	*list;
 
-	list = save_farm(&farm);
-	rlist = get_rooms(list);
-	heat_map(&rlist);
+	farm.rooms = save_farm(&farm);
+	// heat_map(farm, &rlist);
 	// print_all_err();
-	paint_rooms(rlist);
+	paint_rooms(farm.rooms);
 	// paint_farm(list);
-	free_lists(&list, &rlist);
+	free_list(&farm.rooms);
 	// system("leaks lem-in");
 	return (0);
 }

@@ -21,47 +21,26 @@
 
 # include "../libft/includes/libft.h"
 
-# define CONT list->content
-# define NAME list->room->name
-# define RNAME rlist->room->name
-# define VALUE list->room->value
-# define RVALUE rlist->room->value
-# define LLIST list->room->llist
-# define RLLIST rlist->room->llist
-# define TUBE rlist->room->llist->tube
+# define ROOM (t_room*)rooms->content
 
 typedef struct 		s_farm
 {
 	int				ants;
+	t_list			*rooms;
 } 					t_farm;
-
-typedef struct		s_llist
-{
-	char			*tube;
-	struct s_llist	*next;
-}					t_llist;
 
 typedef struct		s_room
 {
 	char			*name;
 	char			rank;
-	t_llist			*llist;
 	int				x;
 	int				y;
+	t_list			*tube;
 	int				value;
 }					t_room;
 
-typedef struct 		s_rlist
-{
-	t_room			*room;
-	struct s_rlist	*next;
-}					t_rlist;
-
 t_list				*save_farm(t_farm *farm);
-t_rlist				*get_rooms(t_list *list);
-t_llist				*newllst(char *name, char *tube);
-t_rlist				*newrlst(t_room *room);
-void				heat_map(t_rlist **rlist);
+// void				heat_map(t_farm farm, t_rlist **rlist);
 
 
 
@@ -69,7 +48,7 @@ void				heat_map(t_rlist **rlist);
 
 
 void				paint_farm(t_list *list);
-void				paint_rooms(t_rlist *rlist);
-void				paint_links(t_llist *llist);
+void				paint_rooms(t_list *rooms);
+
 
 #endif
