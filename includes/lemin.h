@@ -35,7 +35,7 @@ typedef struct		s_room
 	char			rank;
 	int				x;
 	int				y;
-	t_list			*tube;
+	t_list			*tubes;
 	int				value;
 }					t_room;
 
@@ -49,6 +49,8 @@ t_list				*save_farm(t_farm *farm);
 
 void				paint_farm(t_list *list);
 void				paint_rooms(t_list *rooms);
+void				paint_links(t_list *tubes);
+
 
 
 #endif

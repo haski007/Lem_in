@@ -21,6 +21,31 @@ static int 					start_end(char *content)
 	return (0);
 }
 
+static void					get_links(char *line, t_list **alst)
+{
+	t_list		*list;
+	t_room		*room;
+	t_room		*a;
+	t_room		*b;
+	int			i;
+
+	i = 0;
+	while (line[i] != '-')
+		i++;
+	list = *alst;
+	while (list)
+	{
+		room = list->content;
+		if (ft_strnequ(line, room->name, i))
+			a = room;
+		else if (ft_strequ(line + i + 1, room->name))
+			b = room;
+		list = list->next;
+	}
+	ft_lstadd(&a->tubes, ft_lstnew(&b, sizeof(t_room*)));
+	ft_lstadd(&b->tubes, ft_lstnew(&a, sizeof(t_room*)));
+}
+
 static t_room				*make_room(char *str, char rank)
 {
 	t_room	*room;
@@ -28,7 +53,15 @@ static t_room				*make_room(char *str, char rank)
 
 	i = 0;
 	room = (t_room*)malloc(sizeof(t_room));
-	room->name = ft_strdup(str);
+	while (str[i] != ' ')
+		i++;
+	room->name = ft_strndup(str, i);
+	room->x = ft_atoi(str + i);
+	i++;
+	while (str[i] >= '0' && str[i] <= '9')
+		i++;
+	room->y = ft_atoi(str + i);
+	room->rank = rank;
 	return (room);
 }
 
@@ -39,34 +72,25 @@ t_list				*save_farm(t_farm *farm)
 	int		rank;
 	int		fd = 0;
 
-	fd = open("easy_farm", O_RDONLY);
+	fd = open("farm", O_RDONLY);
 	head = NULL;
-	get_next_line(fd, &line);
-	if (!(farm->ants = ft_atoi(line)))
-	{
-		ft_putendl(strerror(5));
-		exit(5);
-	}
-	ft_strdel(&line);
 	while (get_next_line(fd, &line))
 	{
 		rank = 0;
-		if (ft_strequ(line, "##start"))
+		while (line[0] == '#' || !farm->ants)
 		{
-			rank = 1;
+			farm->ants = (!farm->ants) ? ft_atoi(line) : farm->ants;
+			rank = start_end(line);
 			ft_strdel(&line);
-			get_next_line(fd, &line);
-		}
-		if (ft_strequ(line, "##end"))
-		{
-			rank = 2;
-			ft_strdel(&line);
-			get_next_line(fd, &line);
+			if (!get_next_line(fd, &line))
+				return (head);
 		}
 		if (ft_strchr(line, '-'))
-			rank = 2;
+			get_links(line, &head);
 		else
+		{
 			ft_lstadd(&head, ft_lstnew(make_room(line, rank), sizeof(t_room)));
+		}
 		ft_strdel(&line);
 	}
 	return (head);
