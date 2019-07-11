@@ -26,6 +26,7 @@
 typedef struct 		s_farm
 {
 	int				ants;
+	int				N;
 	t_list			*rooms;
 } 					t_farm;
 
@@ -33,14 +34,18 @@ typedef struct		s_room
 {
 	char			*name;
 	char			rank;
+	int				ant;
 	int				x;
 	int				y;
+	char			busy;
 	t_list			*tubes;
 	int				value;
 }					t_room;
 
 t_list				*save_farm(t_farm *farm);
-// void				heat_map(t_farm farm, t_rlist **rlist);
+void				heat_map(t_farm *farm);
+void       			movement(t_farm *farm, t_list **rooms);
+
 
 
 

@@ -58,21 +58,24 @@ static t_room				*make_room(char *str, char rank)
 	room->name = ft_strndup(str, i);
 	room->x = ft_atoi(str + i);
 	i++;
+	room->tubes = NULL;
 	while (str[i] >= '0' && str[i] <= '9')
 		i++;
 	room->y = ft_atoi(str + i);
 	room->rank = rank;
+	room->value = (rank == 2) ? 0 : -1;
 	return (room);
 }
 
 t_list				*save_farm(t_farm *farm)
 {
 	t_list	*head;
+	t_room	*room;
 	char	*line;
 	int		rank;
 	int		fd = 0;
 
-	fd = open("farm", O_RDONLY);
+	// fd = open("easy_farm", O_RDONLY);
 	head = NULL;
 	while (get_next_line(fd, &line))
 	{
@@ -89,7 +92,9 @@ t_list				*save_farm(t_farm *farm)
 			get_links(line, &head);
 		else
 		{
-			ft_lstadd(&head, ft_lstnew(make_room(line, rank), sizeof(t_room)));
+			farm->N++;
+			ft_lstadd(&head, ft_lstnew(room = make_room(line, rank), sizeof(t_room)));
+			free(room);
 		}
 		ft_strdel(&line);
 	}

@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <stdarg.h>
+# include <stdio.h>
 
 # define BUFF_SIZE 1
 # define MALLCHECK(x) if (!x) return (-1);
