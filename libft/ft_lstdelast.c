@@ -1,32 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcdup.c                                       :+:      :+:    :+:   */
+/*   ft_lstdelast.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pdemian <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/03 18:19:34 by pdemian           #+#    #+#             */
-/*   Updated: 2019/07/03 18:19:37 by pdemian          ###   ########.fr       */
+/*   Created: 2019/07/12 15:56:48 by pdemian           #+#    #+#             */
+/*   Updated: 2019/07/12 15:56:50 by pdemian          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/libft.h"
 
-char	*ft_strcdup(const char *s, char c)
+void	ft_lstdelast(t_list **alst)
 {
-	char			*str;
-	unsigned int	i;
-	unsigned int	len;
+	t_list	*tmp;
+	t_list	*list;
 
-	i = -1;
-	len = 0;
-	while (s[len] != c)
-		len++;
-	str = (char*)malloc(sizeof(char) * (len + 1));
-	if (str == NULL)
-		return (NULL);
-	while (++i < len)
-		str[i] = s[i];
-	str[i] = '\0';
-	return (str);
+	if (!alst || !*alst)
+		return ;
+	list = *alst;
+	if (list->next)
+	{
+		while (list->next->next)
+			list = (list)->next;
+		tmp = list;
+		list = list->next;
+		free(list->content);
+		list->content_size = 0;
+		free(list);
+		list = NULL;
+		tmp->next = NULL;
+	}
+	else
+	{
+		free(list->content);
+		list->content_size = 0;
+		free(list);
+		list = NULL;
+		alst = NULL;
+	}
 }

@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int             is_whitespace(char c)
+int	is_whitespace(char c)
 {
-    if (c == ' ' || c == '\n' || c == '\t')
-        return (1);
-    return (0);
+	if (c == ' ' || c == '\n' || c == '\t')
+		return (1);
+	return (0);
 }

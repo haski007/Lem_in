@@ -21,6 +21,30 @@ static void		print_all_err(void)
 		printf("%d) %s\n", i, strerror(i));
 }
 
+static void		paint_path(t_farm *farm)
+{
+	t_list	*path;
+	t_room	*room;
+	int		i;
+
+	i = -1;
+	path = farm->path;
+	while (path)
+	{
+		room = *(t_room**)path->content;
+		++i;
+		printf("%s", room->name);
+		if (path->next)
+			printf("--->");
+		else
+			printf("\n");
+		path = path->next;
+	}
+	printf("--------------------------------------------------\n");
+	printf("Number of steps = %d\n", i);
+	printf("--------------------------------------------------\n");
+}
+
 void			paint_farm(t_list *list)
 {
 	while (list)
@@ -68,14 +92,12 @@ int				main(void)
 {
 	t_farm	farm;
 
-	farm.N = 0;
 	farm.rooms = save_farm(&farm);
 	heat_map(&farm);
-	movement(&farm, &farm.rooms);
+	movement(&farm);
 	// print_all_err();
 	// paint_rooms(farm.rooms);
-	// paint_farm(list);
-	// paint_rooms(farm.rooms);
+	paint_path(&farm);
 	// free_list(&farm.rooms);
 	// system("leaks lem-in");
 	return (0);

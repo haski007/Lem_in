@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strwhile.c                                      :+:      :+:    :+:   */
+/*   ft_lstpush.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pdemian <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/04 17:19:23 by pdemian           #+#    #+#             */
-/*   Updated: 2019/07/04 17:19:24 by pdemian          ###   ########.fr       */
+/*   Created: 2019/07/13 19:54:54 by pdemian           #+#    #+#             */
+/*   Updated: 2019/07/13 19:54:55 by pdemian          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_strwhile(const char *s, int c)
-{
-	int		i;
-	char	*str;
+#include "includes/libft.h"
 
-	str = (char *)s;
-	i = 0;
-	while (str[i] != c)
-		i++;
-	str[i] = '\0';
-	while (str[++i])
-		str[i] = '\0';
-	return (str);
+void			ft_lstpush(t_list **alst, t_list *new)
+{
+	t_list	*list;
+
+	if (!new)
+		return;
+	list = *alst;
+	if (!list)
+	{
+		*alst = new;
+		return ;
+	}
+	while (list->next)
+		list = list->next;
+	list->next = new;
 }

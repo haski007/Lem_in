@@ -91,7 +91,9 @@ SRCS :=		ft_memset.c \
 				ft_del.c \
 				is_whitespace.c \
 				ft_strcdup.c \
-				ft_strwhile.c
+				ft_strwhile.c \
+				ft_lstdelast.c \
+				ft_lstpush.c
 				#types_a.c \
 				types_b.c \
 				x_type.c \
