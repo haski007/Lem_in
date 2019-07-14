@@ -20,6 +20,7 @@ t_room			*min_tube(t_room *room)
 	int		min;
 
 	min = 999;
+	min_tube = NULL;
 	list = room->tubes;
 	while (list)
 	{
@@ -31,6 +32,8 @@ t_room			*min_tube(t_room *room)
 		}
 		list = list->next;
 	}
+	if (!min_tube)
+		return (0);
 	list = room->tubes;
 	while (!ft_strequ((*(t_room**)list->content)->name, min_tube->name))
 		list = list->next;
@@ -53,13 +56,16 @@ t_list		*save_path(t_farm *farm, t_list *rooms)
 			ft_lstpush(&path, ft_lstnew(&room, sizeof(t_room*)));
 			break ;
 		}
-
 		list = list->next;
 	}
 	while (room->rank != 2)
 	{
-		room->busy = 1;
-		room = min_tube(room);
+		room->busy = (room->rank != 1) ? 1 : 0;
+		if (!(room = min_tube(room)))
+		{
+			ft_lstdel(&path, ft_lstfree);
+			return (0);
+		}
 		ft_lstpush(&path, ft_lstnew(&room, sizeof(t_room*)));
 	}
 	return (path);
@@ -72,7 +78,8 @@ void			movement(t_farm *farm)
 	farm->path = NULL;
 	while ((list = save_path(farm, farm->rooms)))
 	{
-		ft_lstpush(&farm->path, ft_lstnew(list, sizeof(t_list*)));
+		ft_lstpush(&farm->path, ft_lstnew(list, sizeof(t_list)));
+		free(list);
 		// printf("%s\n", (*(t_room**)(*(t_list**)farm->path->content))->name);
 	}
 }

@@ -93,7 +93,8 @@ SRCS :=		ft_memset.c \
 				ft_strcdup.c \
 				ft_strwhile.c \
 				ft_lstdelast.c \
-				ft_lstpush.c
+				ft_lstpush.c \
+				ft_lstfree.c
 				#types_a.c \
 				types_b.c \
 				x_type.c \
