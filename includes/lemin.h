@@ -39,6 +39,7 @@ typedef struct		s_room
 	int				x;
 	int				y;
 	char			busy;
+	struct s_room	*parent;
 	t_list			*tubes;
 	int				value;
 }					t_room;
@@ -56,6 +57,8 @@ void       			movement(t_farm *farm);
 void				paint_farm(t_list *list);
 void				paint_rooms(t_list *rooms);
 void				paint_links(t_list *tubes);
+void				paint_path(t_list *path);
+
 
 
 

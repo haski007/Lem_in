@@ -21,12 +21,12 @@ static void		print_all_err(void)
 		printf("%d) %s\n", i, strerror(i));
 }
 
-static void		paint_path(t_list *path)
+void		paint_path(t_list *path)
 {
 	t_room	*room;
 	int		i;
 
-	i = -1;
+	i = 0;
 	while (path)
 	{
 		room = *(t_room**)path->content;
@@ -102,13 +102,13 @@ int				main(void)
 	t_farm	farm;
 
 	farm.rooms = save_farm(&farm);
-	heat_map(&farm);
+	// heat_map(&farm);
 	movement(&farm);
 	// print_all_err();
 	// paint_rooms(farm.rooms);
 	paint_apath(farm);
 	// free_list(&farm.rooms);
-	system("leaks lem-in");
+	// system("leaks lem-in");
 	// exit(0);
 	return (0);
 }

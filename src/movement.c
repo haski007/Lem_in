@@ -12,63 +12,89 @@
 
 #include "../includes/lemin.h"
 
-t_room			*min_tube(t_room *room)
+int			make_flex(t_list **queue, t_room *room)
 {
+	t_list	*links;
+	t_room	*tube;
 	t_list	*list;
-	t_room	*tmp;
-	t_room	*min_tube;
-	int		min;
 
-	min = 999;
-	min_tube = NULL;
-	list = room->tubes;
-	while (list)
+	tube = NULL;
+	links = room->tubes;
+	while (links)
 	{
-		tmp = *(t_room**)list->content;
-		if (tmp->value < min && !tmp->busy)
+		if (!(*(t_room**)links->content)->busy && !ft_strequ(room->name, (*(t_room**)links->content)->name))
 		{
-			min_tube = tmp;
-			min = tmp->value;
+			tube = *(t_room**)links->content;
+			tube->parent = room;
+				ft_lstadd(queue, ft_lstnew(&tube, sizeof(t_room*)));
+			if (tube->rank == 2)
+				break ;
 		}
-		list = list->next;
+		links = links->next;
 	}
-	if (!min_tube)
+	if (!tube)
 		return (0);
-	list = room->tubes;
-	while (!ft_strequ((*(t_room**)list->content)->name, min_tube->name))
-		list = list->next;
-	return (*(t_room**)list->content);
+	else if (tube->rank == 2)
+	{
+		ft_lstdel(queue, ft_lstfree);
+		queue = NULL;
+		return (1);
+	}
+	else
+		ft_lstdelast(queue);
+	return (1);
+}
+
+t_list		*get_path(t_room *room)
+{
+	t_list	*path;
+	t_room	*tmp;
+
+	path = NULL;
+	while (room->rank != 1)
+	{
+		tmp = room;
+		ft_lstadd(&path, ft_lstnew(&room, sizeof(t_room*)));
+		room = room->parent;
+		tmp->parent = NULL;
+		room->busy = 1;
+	}
+	return (path);
 }
 
 t_list		*save_path(t_farm *farm, t_list *rooms)
 {
 	t_list	*list;
-	t_list	*path;
 	t_room	*room;
+	t_list	*queue;
+	t_list	*tmp;
 
-	path = NULL;
+	queue = NULL;
 	list = rooms;
 	while (list)
 	{
 		room = (t_room*)list->content;
 		if (room->rank == 1)
 		{
-			ft_lstpush(&path, ft_lstnew(&room, sizeof(t_room*)));
+			ft_lstpush(&queue, ft_lstnew(&room, sizeof(t_room*)));
 			break ;
 		}
 		list = list->next;
 	}
-	while (room->rank != 2)
+	tmp = queue;
+	while (tmp)
 	{
-		room->busy = (room->rank != 1) ? 1 : 0;
-		if (!(room = min_tube(room)))
-		{
-			ft_lstdel(&path, ft_lstfree);
+		while (tmp->next && tmp)
+			tmp = tmp->next;
+		room = *(t_room**)tmp->content;
+		if (!make_flex(&queue, room))
 			return (0);
-		}
-		ft_lstpush(&path, ft_lstnew(&room, sizeof(t_room*)));
+		tmp = queue;
 	}
-	return (path);
+	list = rooms;
+	while (((t_room*)list->content)->rank != 2)
+		list = list->next;
+	return (get_path((t_room*)list->content));
 }
 
 void			movement(t_farm *farm)

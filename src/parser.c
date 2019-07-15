@@ -63,9 +63,12 @@ static t_room				*make_room(char *str, char rank)
 		i++;
 	room->y = ft_atoi(str + i);
 	room->rank = rank;
-	room->value = (rank == 2) ? 0 : -1;
+	// room->value = (rank == 2) ? 0 : -1;
 	room->ant = -1;
-	room->busy = 0;
+	if (rank == 1)
+		room->busy = 1;
+	else
+		room->busy = 0;
 	return (room);
 }
 
@@ -77,7 +80,7 @@ t_list				*save_farm(t_farm *farm)
 	int		rank;
 	int		fd = 0;
 
-	fd = open("easy_farm", O_RDONLY);
+	fd = open("one_farm", O_RDONLY);
 	head = NULL;
 	while (get_next_line(fd, &line))
 	{
