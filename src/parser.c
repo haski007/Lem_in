@@ -12,6 +12,30 @@
 
 #include "../includes/lemin.h"
 
+void						count_distanse(t_list **alst)
+{
+	t_list	*path;
+	t_list	*list;
+	t_room	*room;
+	int		len;
+
+	path = *alst;
+	while (path)
+	{
+		list = (t_list*)path->content;
+		len = 0;
+		while (list)
+		{
+			len++;
+			list = list->next;
+		}
+		list = (t_list*)path->content;
+		room = *(t_room**)list->content;
+		room->lenght = len;
+		path = path->next;
+	}
+}
+
 static int 					start_end(char *content)
 {
 	if (ft_strstr(content, "##start"))
@@ -69,6 +93,7 @@ static t_room				*make_room(char *str, char rank)
 		room->busy = 1;
 	else
 		room->busy = 0;
+	room->busy2 = 0;
 	return (room);
 }
 
@@ -80,7 +105,7 @@ t_list				*save_farm(t_farm *farm)
 	int		rank;
 	int		fd = 0;
 
-	fd = open("one_farm", O_RDONLY);
+	// fd = open("ten_farm", O_RDONLY);
 	head = NULL;
 	while (get_next_line(fd, &line))
 	{

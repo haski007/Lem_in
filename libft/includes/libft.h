@@ -134,6 +134,7 @@ void				ft_lstdelast(t_list **alst);
 void				ft_lstpush(t_list **alst, t_list *new);
 void				ft_lstfree(void *list, size_t a);
 
+
 int					get_next_line(const int fd, char **line);
 
 /*

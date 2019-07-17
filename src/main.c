@@ -23,36 +23,44 @@ static void		print_all_err(void)
 
 void		paint_path(t_list *path)
 {
+	t_list	*list;
 	t_room	*room;
+	int 	len;
 	int		i;
 
+	len = 0;
 	i = 0;
-	while (path)
+	list = path;
+	while (list)
 	{
-		room = *(t_room**)path->content;
+		room = *(t_room**)list->content;
+		len = (!len) ? room->lenght : len;
 		++i;
 		printf("%s", room->name);
-		if (path->next)
+		if (list->next)
 			printf("--->");
 		else
-			printf("\n");
-		path = path->next;
+			printf("   -   len = %d\n", len);
+		list = list->next;
 	}
 	printf("--------------------------------------------------\n");
 	printf("Number of steps = %d\n", i);
 	printf("--------------------------------------------------\n");
 }
 
-void			paint_apath(t_farm farm)
+void			paint_apath(t_farm *farm)
 {
 	t_list		*list;
+	int 		i = 0;
 
-	list = farm.path;
+	list = farm->path;
 	while (list)
 	{
+		++i;
 		paint_path((t_list*)list->content);
 		list = list->next;
 	}
+	printf("NUMBER OF PATHS = %d\n", i);
 }
 void			paint_farm(t_list *list)
 {
@@ -71,7 +79,7 @@ void			paint_rooms(t_list *rooms)
 	while (rooms)
 	{
 		room = (t_room*)(rooms->content);
-		printf("      ROOM: |%s| |value = %d|", room->name, room->value);
+		printf("      ROOM: |%s|", room->name);
 		if (room->rank == 2)
 			printf("end\n\n");
 		else if (room->rank == 1)
@@ -103,10 +111,11 @@ int				main(void)
 
 	farm.rooms = save_farm(&farm);
 	// heat_map(&farm);
+	get_paths(&farm);
 	movement(&farm);
 	// print_all_err();
 	// paint_rooms(farm.rooms);
-	paint_apath(farm);
+	paint_apath(&farm);
 	// free_list(&farm.rooms);
 	// system("leaks lem-in");
 	// exit(0);

@@ -21,7 +21,7 @@
 
 # include "../libft/includes/libft.h"
 
-# define ROOM (t_room*)rooms->content
+# define TUBE (*(t_room**)tubes->content)
 
 typedef struct 		s_farm
 {
@@ -35,10 +35,12 @@ typedef struct		s_room
 {
 	char			*name;
 	char			rank;
+	int				lenght;
 	int				ant;
 	int				x;
 	int				y;
 	char			busy;
+	char			busy2;
 	struct s_room	*parent;
 	t_list			*tubes;
 	int				value;
@@ -46,7 +48,10 @@ typedef struct		s_room
 
 t_list				*save_farm(t_farm *farm);
 void				heat_map(t_farm *farm);
-void       			movement(t_farm *farm);
+void       			get_paths(t_farm *farm);
+void				movement(t_farm *farm);
+void				count_distanse(t_list **alst);
+
 
 
 
@@ -58,6 +63,7 @@ void				paint_farm(t_list *list);
 void				paint_rooms(t_list *rooms);
 void				paint_links(t_list *tubes);
 void				paint_path(t_list *path);
+void				paint_apath(t_farm *farm);
 
 
 

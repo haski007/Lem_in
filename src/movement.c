@@ -5,107 +5,53 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pdemian <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/11 17:39:21 by pdemian           #+#    #+#             */
-/*   Updated: 2019/07/11 17:39:44 by pdemian          ###   ########.fr       */
+/*   Created: 2019/07/16 21:36:24 by pdemian           #+#    #+#             */
+/*   Updated: 2019/07/16 21:36:26 by pdemian          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/lemin.h"
 
-int			make_flex(t_list **queue, t_room *room)
+int			valid_path(t_farm *farm, t_list *path)
 {
-	t_list	*links;
-	t_room	*tube;
 	t_list	*list;
+	t_list	*paths;
+	t_list	*list2;
+	int 	res;
 
-	tube = NULL;
-	links = room->tubes;
-	while (links)
+	res = 0;
+	list = path;
+	paths = farm->path;
+	list2 = (t_list*)paths->content;
+	while (!ft_strequ((*(t_room**)list2->content)->name, (*(t_room**)list->content)->name))
 	{
-		if (!(*(t_room**)links->content)->busy && !ft_strequ(room->name, (*(t_room**)links->content)->name))
-		{
-			tube = *(t_room**)links->content;
-			tube->parent = room;
-				ft_lstadd(queue, ft_lstnew(&tube, sizeof(t_room*)));
-			if (tube->rank == 2)
-				break ;
-		}
-		links = links->next;
+		res += (*(t_room**)list->content)->lenght - (*(t_room**)list2->content)->lenght;
+		paths = paths->next;
+		list2 = (t_list*)paths->content;
 	}
-	if (!tube)
-		return (0);
-	else if (tube->rank == 2)
-	{
-		ft_lstdel(queue, ft_lstfree);
-		queue = NULL;
-		return (1);
-	}
-	else
-		ft_lstdelast(queue);
-	return (1);
+	return ((res < farm->ants) ? 1 : 0);
 }
 
-t_list		*get_path(t_room *room)
+void 		movement(t_farm *farm)
 {
 	t_list	*path;
-	t_room	*tmp;
-
-	path = NULL;
-	while (room->rank != 1)
-	{
-		tmp = room;
-		ft_lstadd(&path, ft_lstnew(&room, sizeof(t_room*)));
-		room = room->parent;
-		tmp->parent = NULL;
-		room->busy = 1;
-	}
-	return (path);
-}
-
-t_list		*save_path(t_farm *farm, t_list *rooms)
-{
 	t_list	*list;
 	t_room	*room;
-	t_list	*queue;
-	t_list	*tmp;
 
-	queue = NULL;
-	list = rooms;
-	while (list)
+	path = farm->path;
+	while (path)
 	{
-		room = (t_room*)list->content;
-		if (room->rank == 1)
+		if (!valid_path(farm, (t_list*)path->content))
 		{
-			ft_lstpush(&queue, ft_lstnew(&room, sizeof(t_room*)));
+			while (path)
+				ft_lstdelast(&path);
+			path = NULL;
+			path = farm->path;
+			while (path->next->next)
+				path = path->next;
+			path->next = NULL;
 			break ;
 		}
-		list = list->next;
-	}
-	tmp = queue;
-	while (tmp)
-	{
-		while (tmp->next && tmp)
-			tmp = tmp->next;
-		room = *(t_room**)tmp->content;
-		if (!make_flex(&queue, room))
-			return (0);
-		tmp = queue;
-	}
-	list = rooms;
-	while (((t_room*)list->content)->rank != 2)
-		list = list->next;
-	return (get_path((t_room*)list->content));
-}
-
-void			movement(t_farm *farm)
-{
-	t_list	*list;
-	
-	farm->path = NULL;
-	while ((list = save_path(farm, farm->rooms)))
-	{
-		ft_lstpush(&farm->path, ft_lstnew(list, sizeof(t_list)));
-		free(list);
-		// printf("%s\n", (*(t_room**)(*(t_list**)farm->path->content))->name);
+		path = path->next;
 	}
 }
