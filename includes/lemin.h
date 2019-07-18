@@ -27,9 +27,11 @@ typedef struct 		s_farm
 {
 	int				ants;
 	t_list			*rooms;
-	t_list			*queue;
 	t_list			*path;
+	t_list			*res;
 } 					t_farm;
+
+
 
 typedef struct		s_room
 {
@@ -43,15 +45,21 @@ typedef struct		s_room
 	char			busy2;
 	struct s_room	*parent;
 	t_list			*tubes;
-	int				value;
 }					t_room;
+
+typedef	struct		s_ant
+{
+	int				N;
+	int				row;
+	t_room			*room;
+}					t_ant;
 
 t_list				*save_farm(t_farm *farm);
 void				heat_map(t_farm *farm);
 void       			get_paths(t_farm *farm);
 void				movement(t_farm *farm);
 void				count_distanse(t_list **alst);
-
+void            	cut_the_path(t_farm *farm);
 
 
 

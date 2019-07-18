@@ -93,17 +93,16 @@ t_list			*get_path(t_farm *farm, int i)
 void			get_paths(t_farm *farm)
 {
 	t_list	*list;
+	t_list	*path;
 	int		i;
 	
 	i = 0;
 	farm->path = NULL;
 	while ((list = get_path(farm, ++i)))
 	{
-		// system("leaks lem-in");
-		// exit(0);
 		ft_lstpush(&farm->path, ft_lstnew(list, sizeof(t_list)));
 		free(list);
-		// printf("%s\n", (*(t_room**)(*(t_list**)farm->path->content))->name);
 	}
 	count_distanse(&farm->path);
+	cut_the_path(farm);
 }

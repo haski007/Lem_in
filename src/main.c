@@ -21,6 +21,26 @@ static void		print_all_err(void)
 		printf("%d) %s\n", i, strerror(i));
 }
 
+void		paint_res(t_farm *farm)
+{
+	t_list	*res;
+	t_list	*list;
+
+	res = farm->res;
+	while (res)
+	{
+		list = (t_list*)res->content;
+		while (list)
+		{
+			ft_putstr((char*)list->content);
+			ft_putchar(' ');
+			list = list->next;
+		}
+		ft_putchar('\n');
+		res = res->next;
+	}
+}
+
 void		paint_path(t_list *path)
 {
 	t_list	*list;
@@ -115,7 +135,8 @@ int				main(void)
 	movement(&farm);
 	// print_all_err();
 	// paint_rooms(farm.rooms);
-	paint_apath(&farm);
+	// paint_apath(&farm);
+	// paint_res(&farm);
 	// free_list(&farm.rooms);
 	// system("leaks lem-in");
 	// exit(0);
