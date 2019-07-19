@@ -132,11 +132,11 @@ int				main(void)
 	farm.rooms = save_farm(&farm);
 	// heat_map(&farm);
 	get_paths(&farm);
-	movement(&farm);
 	// print_all_err();
 	// paint_rooms(farm.rooms);
-	// paint_apath(&farm);
 	// paint_res(&farm);
+	paint_apath(&farm);
+	movement(&farm);
 	// free_list(&farm.rooms);
 	// system("leaks lem-in");
 	// exit(0);

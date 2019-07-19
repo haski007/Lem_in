@@ -105,7 +105,7 @@ t_list				*save_farm(t_farm *farm)
 	int		rank;
 	int		fd = 0;
 
-	fd = open("easy_farm", O_RDONLY);
+	// fd = open("easy_farm", O_RDONLY);
 	head = NULL;
 	while (get_next_line(fd, &line))
 	{

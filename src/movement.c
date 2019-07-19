@@ -51,6 +51,8 @@ int			start(t_farm *farm, t_list **queue, t_list **paths)
 	path = *paths;
 	while (path && farm->ants)
 	{
+		if (!valid_path(farm, (t_list*)path->content))
+			break ;
 		farm->ants--;
 		ft_lstadd(queue, ft_lstnew(ant = make_ant(*(t_room**)((t_list*)path->content)->content, ++n, ++i), sizeof(t_ant)));
 		path = path->next;
@@ -58,7 +60,7 @@ int			start(t_farm *farm, t_list **queue, t_list **paths)
 	return (1);
 }
 
-int			move_ant(t_list **queue, t_ant *ant, t_list *path)
+int			move_ant(t_farm *farm, t_list **queue, t_ant *ant, t_list *path)
 {
 	t_list	*list;
 
@@ -91,26 +93,38 @@ void 		movement(t_farm *farm)
 	t_list	*queue;
 	t_list	*paths;
 	t_list	*tmp;
+	int		fuck;
 	int		i;
 	int		end;
+	int		n;
 
+	n = 0;
 	end = farm->ants;
 	queue = NULL;
 	while (end > 0)
 	{
 		paths = farm->path;
 		start(farm, &queue, &paths);
+		system("leaks lem-in");
+		exit(0);
 		tmp = queue;
+		fuck = ((t_ant*)queue->content)->N;
+		while (tmp)
+		{
 			while (tmp->next)
 				tmp = tmp->next;
 			i = 0;
-			while (paths)
-			{
-				end -= move_ant(&queue, (t_ant*)tmp->content, (t_list*)paths->content);
+			paths = farm->path; 
+			while (++i < ((t_ant*)tmp->content)->row)
 				paths = paths->next;
-			}
-			start(farm, &queue, &paths);
+			i = end;
+			end -= move_ant(farm, &queue, (t_ant*)tmp->content, (t_list*)paths->content);
 			tmp = queue;
+			if (!tmp || (((t_ant*)queue->content)->N == fuck && end == i))
+				break ;
+		}
 		printf("\n");
+		n++;
 	}
+	printf("---------------------------------------\nNumber of lines = %d\n---------------------------------------\n", n);
 }

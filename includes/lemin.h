@@ -60,6 +60,8 @@ void       			get_paths(t_farm *farm);
 void				movement(t_farm *farm);
 void				count_distanse(t_list **alst);
 void            	cut_the_path(t_farm *farm);
+int					valid_path(t_farm *farm, t_list *path);
+
 
 
 
