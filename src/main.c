@@ -12,133 +12,127 @@
 
 #include "../includes/lemin.h"
 
-static void		print_all_err(void)
-{
-	int	i;
-
-	i = -1;
-	while (++i < 107)
-		printf("%d) %s\n", i, strerror(i));
-}
-
-void		paint_res(t_farm *farm)
-{
-	t_list	*res;
-	t_list	*list;
-
-	res = farm->res;
-	while (res)
-	{
-		list = (t_list*)res->content;
-		while (list)
-		{
-			ft_putstr((char*)list->content);
-			ft_putchar(' ');
-			list = list->next;
-		}
-		ft_putchar('\n');
-		res = res->next;
-	}
-}
-
-void		paint_path(t_list *path)
+void			paint_path(t_list *path)
 {
 	t_list	*list;
 	t_room	*room;
-	int 	len;
+	void	*color;
+	int		len;
 	int		i;
 
 	len = 0;
 	i = 0;
+	color = rand_color();
 	list = path;
 	while (list)
 	{
 		room = *(t_room**)list->content;
-		len = (!len) ? room->lenght : len;
 		++i;
-		printf("%s", room->name);
+		ft_printf("%t%s", color, room->name);
 		if (list->next)
-			printf("--->");
+			ft_printf("--->%t", EOC);
 		else
-			printf("   -   len = %d\n", len);
+			ft_printf("%t", EOC);
 		list = list->next;
 	}
-	printf("--------------------------------------------------\n");
-	printf("Number of steps = %d\n", i);
-	printf("--------------------------------------------------\n");
 }
 
-void			paint_apath(t_farm *farm)
+void			paint_paths(t_farm *farm)
 {
 	t_list		*list;
-	int 		i = 0;
+	int			i;
 
+	i = 0;
 	list = farm->path;
 	while (list)
 	{
 		++i;
+		if (i != 1)
+		{
+			ft_putchar('\n');
+			ft_putchar('\n');
+		}
+		ft_printf("%t%2d) lenght: %d | %t", B_CYAN, i,
+		(*(t_room**)((t_list*)list->content)->content)->lenght, EOC);
 		paint_path((t_list*)list->content);
 		list = list->next;
 	}
-	printf("NUMBER OF PATHS = %d\n", i);
+	ft_putchar('\n');
+	ft_putchar('\n');
 }
-void			paint_farm(t_list *list)
+
+void			get_flags(t_farm *farm, int ac, char **av)
 {
+	int			i;
+	int			j;
+	const char	*my_flags;
+
+	my_flags = "pcsrl";
+	if (ac == 1)
+		return ;
+	ft_bzero(&farm->flags, sizeof(t_flags));
+	i = 0;
+	while (++i < ac)
+	{
+		if (av[i][0] != '-')
+			print_usage();
+		j = 0;
+		while (av[i][++j])
+		{
+			if (!ft_strchr(my_flags, av[i][j]))
+				print_usage();
+			farm->flags.p = (av[i][j] == 'p') ? 1 : farm->flags.p;
+			farm->flags.c = (av[i][j] == 'c') ? 1 : farm->flags.c;
+			farm->flags.s = (av[i][j] == 's') ? 1 : farm->flags.s;
+			farm->flags.r = (av[i][j] == 'r') ? 1 : farm->flags.r;
+			farm->flags.l = (av[i][j] == 'l') ? 1 : farm->flags.l;
+		}
+	}
+}
+
+void			print_input(t_farm *farm)
+{
+	t_list	*list;
+
+	list = farm->input;
+	validator(farm);
 	while (list)
 	{
-		printf("%zu) ", list->content_size);
-		printf("%s", list->content);
+		if (ft_strnequ((char*)list->content,
+		"#Here is the number of lines required:", 38))
+			farm->num_lines = ft_atoi((char*)list->content + 38);
+		if (!farm->flags.s)
+			ft_printf("%t%s%t", (farm->flags.c) ? B_GREEN : EOC,
+			(char*)list->content, EOC);
 		list = list->next;
 	}
+	ft_putchar('\n');
+	ft_putchar('\n');
 }
 
-void			paint_rooms(t_list *rooms)
-{
-	t_room	*room;
-
-	while (rooms)
-	{
-		room = (t_room*)(rooms->content);
-		printf("      ROOM: |%s|", room->name);
-		if (room->rank == 2)
-			printf("end\n\n");
-		else if (room->rank == 1)
-			printf("start\n\n");
-		else
-			printf("0_o\n\n");
-		paint_links(room->tubes);
-		rooms = rooms->next;
-	}
-}
-
-void			paint_links(t_list *tubes)
-{
-	int		i;
-	t_room 	*room;
-
-	i = 0;
-	while (tubes)
-	{
-		room = (*(t_room**)tubes->content);
-		printf("link %d   -%5s\n", ++i, room->name);
-		tubes = tubes->next;
-	}
-}
-
-int				main(void)
+int				main(int ac, char **av)
 {
 	t_farm	farm;
 
+	srand(time(NULL));
+	farm.res = 0;
+	farm.ants = 199191;
+	farm.input = NULL;
+	get_flags(&farm, ac, av);
 	farm.rooms = save_farm(&farm);
-	// heat_map(&farm);
+	print_input(&farm);
 	get_paths(&farm);
-	// print_all_err();
-	// paint_rooms(farm.rooms);
-	// paint_res(&farm);
-	paint_apath(&farm);
+	if (farm.flags.p)
+		paint_paths(&farm);
 	movement(&farm);
-	// free_list(&farm.rooms);
-	// system("leaks lem-in");
-	// exit(0);
+	if (farm.flags.r)
+	{
+		ft_printf("%t |\n\\ /\nNumber of lines = %t%d\n/ \\\n |\n%t",
+		B_GREEN, B_YELLOW, farm.res, EOC);
+		ft_printf("%tHere is the number of lines required: %t%d\n%t",
+		B_MAGENTA, B_YELLOW, farm.num_lines, EOC);
+	}
+	if (farm.flags.l)
+		system("leaks lem-in");
 	return (0);
 }

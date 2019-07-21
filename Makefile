@@ -18,13 +18,13 @@ LIBDIR :=	libft/
 OBJDIR :=	.obj/
 
 CC :=		clang
-CFLAGS :=	-g #-Wall -Wextra -Werror
+CFLAGS :=	-g -Wall -Wextra -Werror
 IFLAGS :=	-I $(INCDIR)
 LFLAGS :=	-lft -L $(LIBDIR)
 
 LIB :=		$(LIBDIR)libft.a	
 INC :=		lemin	
-SRC :=		main parser paths ultis movement #heat_map
+SRC :=		main parser paths ultis movement validator
 
 INCS :=		$(addprefix $(INCDIR), $(addsuffix .h, $(INC)))
 SRCS :=		$(addprefix $(SRCDIR), $(addsuffix .c, $(SRC)))

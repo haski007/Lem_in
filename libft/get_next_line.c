@@ -64,6 +64,8 @@ static int			read_this_ducking_file(const int fd, char **tmp)
 		buff[ret] = '\0';
 		str = *tmp;
 		*tmp = ft_strjoin(str, buff);
+		if (ft_strequ(*tmp, "\n"))
+			*tmp = NULL;
 		free(str);
 		if (ft_strchr(buff, '\n'))
 			return (ret);

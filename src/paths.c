@@ -12,17 +12,27 @@
 
 #include "../includes/lemin.h"
 
+t_room		*find_start(t_list *list)
+{
+	while (list)
+	{
+		if (((t_room*)list->content)->rank == 1)
+			return ((t_room*)list->content);
+		list = list->next;
+	}
+	return (0);
+}
+
 int			find_end(t_list **queue, t_room *room, int i)
 {
 	t_list	*tubes;
 	t_room	*tube;
-	t_room	*tmp;
 
 	tubes = room->tubes;
 	tube = NULL;
 	while (tubes)
 	{
-		if (TUBE->busy != i && !TUBE->busy2)
+		if ((TUBE->busy != i && !TUBE->busy2))
 		{
 			tube = *(t_room**)tubes->content;
 			tube->parent = room;
@@ -41,61 +51,61 @@ int			find_end(t_list **queue, t_room *room, int i)
 	return (0);
 }
 
-t_list			*get_list(t_room *room, int i)
+t_list		*get_list(t_room *room, int i)
 {
 	t_list	*list;
 
 	list = NULL;
 	if (room->rank != 2)
 		return (0);
-	while (room->rank != 1)
+	if (room->parent->rank == 1)
 	{
-		// printf("%s\n", room->name);
 		ft_lstadd(&list, ft_lstnew(&room, sizeof(t_room*)));
-		room->busy = (room->rank != 2) ? i + 1 : 0;
-		room->busy2 = (room->rank != 2) ? 1 : 0;
-		room = room->parent;
+		ft_lstadd(&list, ft_lstnew(&room->parent, sizeof(t_room*)));
 	}
+	else
+		while (room->rank != 1)
+		{
+			ft_lstadd(&list, ft_lstnew(&room, sizeof(t_room*)));
+			room->busy = (room->rank != 2) ? i + 1 : 0;
+			room->busy2 = (room->rank != 2) ? 1 : 0;
+			room = room->parent;
+		}
 	room->busy = i + 1;
 	return (list);
 }
 
-t_list			*get_path(t_farm *farm, int i)
+t_list		*get_path(t_farm *farm, int i)
 {
 	t_list		*list;
 	t_room		*room;
 	t_list		*queue;
-	t_list		*tmp;
 
 	list = farm->rooms;
 	queue = NULL;
+	room = find_start(list);
+	ft_lstadd(&queue, ft_lstnew(&room, sizeof(t_room*)));
+	list = queue;
 	while (list)
 	{
-		room = (t_room*)list->content;
-		if (room->rank == 1)
-			break ;
-		list = list->next;
-	}
-	ft_lstadd(&queue, ft_lstnew(&room, sizeof(t_room*)));
-	tmp = queue;
-	while (tmp)
-	{
-		while (tmp->next)
-			tmp = tmp->next;
-		room = (*(t_room**)tmp->content);
+		while (list->next)
+			list = list->next;
+		room = (*(t_room**)list->content);
 		if (find_end(&queue, room, i))
+		{
+			ft_lstdel(&queue, ft_lstfree);
 			break ;
-		tmp = queue;
+		}
+		list = queue;
 	}
 	return (get_list(room, i));
 }
 
-void			get_paths(t_farm *farm)
+void		get_paths(t_farm *farm)
 {
 	t_list	*list;
-	t_list	*path;
 	int		i;
-	
+
 	i = 0;
 	farm->path = NULL;
 	while ((list = get_path(farm, ++i)))
@@ -104,5 +114,4 @@ void			get_paths(t_farm *farm)
 		free(list);
 	}
 	count_distanse(&farm->path);
-	cut_the_path(farm);
 }

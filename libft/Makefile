@@ -15,7 +15,7 @@ OBJDIR :=	.obj/
 INCLD :=	includes/libft.h
 
 CC :=		clang
-CFLAGS :=	-g -Wall -Wextra -Werror
+CFLAGS :=	-g #-Wall -Wextra -Werror
 
 SRCS :=		ft_memset.c \
 				ft_bzero.c \
@@ -94,8 +94,8 @@ SRCS :=		ft_memset.c \
 				ft_strwhile.c \
 				ft_lstdelast.c \
 				ft_lstpush.c \
-				ft_lstfree.c
-				#types_a.c \
+				ft_lstfree.c \
+				types_a.c \
 				types_b.c \
 				x_type.c \
 				manage.c \

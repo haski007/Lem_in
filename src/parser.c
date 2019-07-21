@@ -12,7 +12,7 @@
 
 #include "../includes/lemin.h"
 
-void						count_distanse(t_list **alst)
+void			count_distanse(t_list **alst)
 {
 	t_list	*path;
 	t_list	*list;
@@ -36,16 +36,24 @@ void						count_distanse(t_list **alst)
 	}
 }
 
-static int 					start_end(char *content)
+static int		start_end(t_farm *farm, char **line)
 {
-	if (ft_strstr(content, "##start"))
-		return (1);
-	else if (ft_strstr(content, "##end"))
-		return (2);
-	return (0);
+	int		rank;
+
+	rank = 0;
+	farm->ants = (farm->ants == 199191) ? ft_atoi(*line) : farm->ants;
+	if (ft_strstr(*line, "##start"))
+		rank = 1;
+	else if (ft_strstr(*line, "##end"))
+		rank = 2;
+	ft_strdel(line);
+	if (!get_next_line(0, line))
+		return (-1);
+	ft_lstpush(&farm->input, ft_lstnew(*line, ft_strlen(*line)));
+	return (rank);
 }
 
-static void					get_links(char *line, t_list **alst)
+static void		get_links(char *line, t_list **alst)
 {
 	t_list		*list;
 	t_room		*room;
@@ -56,6 +64,8 @@ static void					get_links(char *line, t_list **alst)
 	i = 0;
 	while (line[i] != '-')
 		i++;
+	a = NULL;
+	b = NULL;
 	list = *alst;
 	while (list)
 	{
@@ -66,19 +76,25 @@ static void					get_links(char *line, t_list **alst)
 			b = room;
 		list = list->next;
 	}
+	if (!a || !b)
+		show_error("Really!? You have linked non existing room...!");
 	ft_lstadd(&a->tubes, ft_lstnew(&b, sizeof(t_room*)));
 	ft_lstadd(&b->tubes, ft_lstnew(&a, sizeof(t_room*)));
 }
 
-static t_room				*make_room(char *str, char rank)
+static t_room	*make_room(char *str, char rank)
 {
 	t_room	*room;
 	int		i;
+	int		j;
 
-	i = 0;
 	room = (t_room*)malloc(sizeof(t_room));
-	while (str[i] != ' ')
-		i++;
+	i = -1;
+	while (str[++i] != ' ')
+		j = i;
+	while (str[++j])
+		if ((str[j] < '0' || str[j] > '9') && str[j] != ' ')
+			show_error("Some of your rooms are incorrect...!");
 	room->name = ft_strndup(str, i);
 	room->x = ft_atoi(str + i);
 	i++;
@@ -87,42 +103,35 @@ static t_room				*make_room(char *str, char rank)
 		i++;
 	room->y = ft_atoi(str + i);
 	room->rank = rank;
-	// room->value = (rank == 2) ? 0 : -1;
 	room->ant = 0;
+	room->busy = 0;
 	if (rank == 1)
 		room->busy = 1;
-	else
-		room->busy = 0;
 	room->busy2 = 0;
 	return (room);
 }
 
-t_list				*save_farm(t_farm *farm)
+t_list			*save_farm(t_farm *farm)
 {
 	t_list	*head;
 	t_room	*room;
 	char	*line;
 	int		rank;
-	int		fd = 0;
 
-	// fd = open("easy_farm", O_RDONLY);
 	head = NULL;
-	while (get_next_line(fd, &line))
+	while (get_next_line(0, &line))
 	{
 		rank = 0;
-		while (line[0] == '#' || !farm->ants)
-		{
-			farm->ants = (!farm->ants) ? ft_atoi(line) : farm->ants;
-			rank = start_end(line);
-			ft_strdel(&line);
-			if (!get_next_line(fd, &line))
+		ft_lstpush(&farm->input, ft_lstnew(line, ft_strlen(line)));
+		while (line[0] == '#' || farm->ants == 199191)
+			if ((rank = start_end(farm, &line)) < 0)
 				return (head);
-		}
 		if (ft_strchr(line, '-'))
 			get_links(line, &head);
 		else
 		{
-			ft_lstadd(&head, ft_lstnew(room = make_room(line, rank), sizeof(t_room)));
+			ft_lstadd(&head,
+			ft_lstnew(room = make_room(line, rank), sizeof(t_room)));
 			free(room);
 		}
 		ft_strdel(&line);

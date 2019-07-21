@@ -19,7 +19,7 @@ char		*make_step(int ant, char *name)
 	char	*tmp2;
 
 	str = ft_strdup("L");
-	tmp = ft_strjoin(str, tmp2 = ft_itoa(ant));
+	tmp = ft_strjoin(str, (tmp2 = ft_itoa(ant)));
 	free(tmp2);
 	free(str);
 	str = ft_strjoin(tmp, "-");
@@ -29,12 +29,12 @@ char		*make_step(int ant, char *name)
 	return (tmp);
 }
 
-t_ant		*make_ant(t_room *room, int N, int i)
+t_ant		*make_ant(t_room *room, int n, int i)
 {
 	t_ant *ant;
 
 	ant = (t_ant*)malloc(sizeof(t_ant));
-	ant->N = N;
+	ant->N = n;
 	ant->room = room;
 	ant->row = i;
 	return (ant);
@@ -42,9 +42,9 @@ t_ant		*make_ant(t_room *room, int N, int i)
 
 int			start(t_farm *farm, t_list **queue, t_list **paths)
 {
-	t_list 	*path;
-	t_ant	*ant;
-	int		i;
+	t_list			*path;
+	t_ant			*ant;
+	int				i;
 	static int		n = 0;
 
 	i = 0;
@@ -55,6 +55,7 @@ int			start(t_farm *farm, t_list **queue, t_list **paths)
 			break ;
 		farm->ants--;
 		ft_lstadd(queue, ft_lstnew(ant = make_ant(*(t_room**)((t_list*)path->content)->content, ++n, ++i), sizeof(t_ant)));
+		free(ant);
 		path = path->next;
 	}
 	return (1);
@@ -63,6 +64,7 @@ int			start(t_farm *farm, t_list **queue, t_list **paths)
 int			move_ant(t_farm *farm, t_list **queue, t_ant *ant, t_list *path)
 {
 	t_list	*list;
+	t_ant	*m;
 
 	list = path;
 	while (list)
@@ -71,14 +73,15 @@ int			move_ant(t_farm *farm, t_list **queue, t_ant *ant, t_list *path)
 		{
 			if (ant->room->rank == 2)
 			{
-				printf("L%d-%s ", ant->N, ant->room->name);
+				print_move(farm, ant, ant->room);
 				ft_lstdelast(queue);
 				return (1);
 			}
 			else
 			{
-				printf("L%d-%s ", ant->N, ant->room->name);
-				ft_lstadd(queue, ft_lstnew(make_ant(*(t_room**)list->next->content, ant->N, ant->row), sizeof(t_ant)));
+				print_move(farm, ant, ant->room);
+				ft_lstadd(queue, ft_lstnew(m = make_ant(*(t_room**)list->next->content, ant->N, ant->row), sizeof(t_ant)));
+				free(m);
 				ft_lstdelast(queue);
 				return (0);
 			}
@@ -88,7 +91,7 @@ int			move_ant(t_farm *farm, t_list **queue, t_ant *ant, t_list *path)
 	return (0);
 }
 
-void 		movement(t_farm *farm)
+void		movement(t_farm *farm)
 {
 	t_list	*queue;
 	t_list	*paths;
@@ -96,17 +99,13 @@ void 		movement(t_farm *farm)
 	int		fuck;
 	int		i;
 	int		end;
-	int		n;
 
-	n = 0;
 	end = farm->ants;
 	queue = NULL;
 	while (end > 0)
 	{
 		paths = farm->path;
 		start(farm, &queue, &paths);
-		system("leaks lem-in");
-		exit(0);
 		tmp = queue;
 		fuck = ((t_ant*)queue->content)->N;
 		while (tmp)
@@ -114,7 +113,7 @@ void 		movement(t_farm *farm)
 			while (tmp->next)
 				tmp = tmp->next;
 			i = 0;
-			paths = farm->path; 
+			paths = farm->path;
 			while (++i < ((t_ant*)tmp->content)->row)
 				paths = paths->next;
 			i = end;
@@ -123,8 +122,8 @@ void 		movement(t_farm *farm)
 			if (!tmp || (((t_ant*)queue->content)->N == fuck && end == i))
 				break ;
 		}
-		printf("\n");
-		n++;
+		if (!farm->flags.s)
+			ft_printf("\n");
+		farm->res++;
 	}
-	printf("---------------------------------------\nNumber of lines = %d\n---------------------------------------\n", n);
 }
