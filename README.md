@@ -5,6 +5,8 @@ Used BFS algorithms, and queue's way to check list.
 
 A goal of this project is to launch ants through generated map to the END room. The only one ant can be located at 1 room.
 
+# HOW TO TRY
+
 Firstly use generator to create map:
 ./generator --help > [file]
 
