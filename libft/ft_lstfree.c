@@ -12,9 +12,9 @@
 
 #include "includes/libft.h"
 
-void	ft_lstfree(void *list, size_t a)
+void		ft_lstfree(void *list, size_t a)
 {
-    (void)a;
-    free(((t_list*)list)->content);
-    ft_memdel(&list);
+	(void)a;
+	free(((t_list *)list)->content);
+	ft_memdel(&list);
 }

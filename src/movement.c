@@ -12,29 +12,12 @@
 
 #include "../includes/lemin.h"
 
-char		*make_step(int ant, char *name)
-{
-	char	*str;
-	char	*tmp;
-	char	*tmp2;
-
-	str = ft_strdup("L");
-	tmp = ft_strjoin(str, (tmp2 = ft_itoa(ant)));
-	free(tmp2);
-	free(str);
-	str = ft_strjoin(tmp, "-");
-	free(tmp);
-	tmp = ft_strjoin(str, name);
-	free(str);
-	return (tmp);
-}
-
 t_ant		*make_ant(t_room *room, int n, int i)
 {
 	t_ant *ant;
 
 	ant = (t_ant*)malloc(sizeof(t_ant));
-	ant->N = n;
+	ant->n = n;
 	ant->room = room;
 	ant->row = i;
 	return (ant);
@@ -54,7 +37,8 @@ int			start(t_farm *farm, t_list **queue, t_list **paths)
 		if (!valid_path(farm, (t_list*)path->content))
 			break ;
 		farm->ants--;
-		ft_lstadd(queue, ft_lstnew(ant = make_ant(*(t_room**)((t_list*)path->content)->content, ++n, ++i), sizeof(t_ant)));
+		ft_lstadd(queue, ft_lstnew(ant = make_ant(*(t_room**)
+		((t_list*)path->content)->content, ++n, ++i), sizeof(t_ant)));
 		free(ant);
 		path = path->next;
 	}
@@ -69,59 +53,66 @@ int			move_ant(t_farm *farm, t_list **queue, t_ant *ant, t_list *path)
 	list = path;
 	while (list)
 	{
-		if (ft_strequ((*(t_room**)list->content)->name, ant->room->name))
+		if (ant->room->rank == 2 &&
+		ft_strequ((*(t_room**)list->content)->name, ant->room->name))
 		{
-			if (ant->room->rank == 2)
-			{
-				print_move(farm, ant, ant->room);
-				ft_lstdelast(queue);
-				return (1);
-			}
-			else
-			{
-				print_move(farm, ant, ant->room);
-				ft_lstadd(queue, ft_lstnew(m = make_ant(*(t_room**)list->next->content, ant->N, ant->row), sizeof(t_ant)));
-				free(m);
-				ft_lstdelast(queue);
-				return (0);
-			}
+			print_move(farm, ant, ant->room);
+			ft_lstdelast(queue);
+			return (1);
+		}
+		else if (ft_strequ((*(t_room**)list->content)->name, ant->room->name))
+		{
+			print_move(farm, ant, ant->room);
+			ft_lstadd(queue, ft_lstnew(m = make_ant(*(t_room**)
+			list->next->content, ant->n, ant->row), sizeof(t_ant)));
+			free(m);
+			ft_lstdelast(queue);
+			return (0);
 		}
 		list = list->next;
 	}
 	return (0);
 }
 
+int			find_move(t_farm *farm, t_list **queue, int end)
+{
+	int		fuck;
+	t_list	*paths;
+	t_list	*tmp;
+	int		i;
+
+	paths = farm->path;
+	start(farm, queue, &paths);
+	fuck = ((t_ant*)(*queue)->content)->n;
+	tmp = *queue;
+	while (tmp)
+	{
+		while (tmp->next)
+			tmp = tmp->next;
+		i = 0;
+		paths = farm->path;
+		while (++i < ((t_ant*)tmp->content)->row)
+			paths = paths->next;
+		i = end;
+		end -= move_ant(farm, queue,
+		(t_ant*)tmp->content, (t_list*)paths->content);
+		tmp = *queue;
+		if (!tmp || (((t_ant*)(*queue)->content)->n == fuck && end == i))
+			break ;
+	}
+	return (end);
+}
+
 void		movement(t_farm *farm)
 {
 	t_list	*queue;
-	t_list	*paths;
-	t_list	*tmp;
-	int		fuck;
-	int		i;
 	int		end;
 
 	end = farm->ants;
 	queue = NULL;
 	while (end > 0)
 	{
-		paths = farm->path;
-		start(farm, &queue, &paths);
-		tmp = queue;
-		fuck = ((t_ant*)queue->content)->N;
-		while (tmp)
-		{
-			while (tmp->next)
-				tmp = tmp->next;
-			i = 0;
-			paths = farm->path;
-			while (++i < ((t_ant*)tmp->content)->row)
-				paths = paths->next;
-			i = end;
-			end -= move_ant(farm, &queue, (t_ant*)tmp->content, (t_list*)paths->content);
-			tmp = queue;
-			if (!tmp || (((t_ant*)queue->content)->N == fuck && end == i))
-				break ;
-		}
+		end = find_move(farm, &queue, end);
 		if (!farm->flags.s)
 			ft_printf("\n");
 		farm->res++;

@@ -14,17 +14,15 @@
 
 void			ft_lstpush(t_list **alst, t_list *new)
 {
-	t_list	*list;
+	t_list	*elem;
 
-	if (!new)
-		return;
-	list = *alst;
-	if (!list)
+	if (*alst)
 	{
-		*alst = new;
-		return ;
+		elem = *alst;
+		while (elem->next)
+			elem = elem->next;
+		elem->next = new;
 	}
-	while (list->next)
-		list = list->next;
-	list->next = new;
+	else
+		*alst = new;
 }

@@ -12,6 +12,24 @@
 
 #include "../includes/lemin.h"
 
+char			*make_step(int ant, char *name)
+{
+	char	*str;
+	char	*tmp;
+	char	*tmp2;
+
+	str = ft_strdup("L");
+	tmp2 = ft_itoa(ant);
+	tmp = ft_strjoin(str, tmp2);
+	free(tmp2);
+	free(str);
+	str = ft_strjoin(tmp, "-");
+	free(tmp);
+	tmp = ft_strjoin(str, name);
+	free(str);
+	return (tmp);
+}
+
 void			check_start_end(t_list **input)
 {
 	int		s;
@@ -23,9 +41,9 @@ void			check_start_end(t_list **input)
 	list = *input;
 	while (list)
 	{
-		if (ft_strequ((char*)list->content, "##start\n"))
+		if (ft_strequ((char*)list->content, "##start"))
 			s++;
-		else if (ft_strequ((char*)list->content, "##end\n"))
+		else if (ft_strequ((char*)list->content, "##end"))
 			e++;
 		list = list->next;
 	}
@@ -39,15 +57,13 @@ void			check_start_end(t_list **input)
 		show_error("Man, where is your end room?");
 }
 
-void			validate_rooms(t_list **rooms)
+void			validate_rooms(t_list **rooms, t_list *list)
 {
-	t_list	*list;
 	t_room	*room;
 	t_list	*tmp;
 	int		n;
 	int		c;
 
-	list = *rooms;
 	while (list)
 	{
 		room = (t_room*)list->content;
@@ -56,10 +72,9 @@ void			validate_rooms(t_list **rooms)
 		tmp = *rooms;
 		while (tmp)
 		{
-			if (ft_strequ(room->name, ((t_room*)tmp->content)->name))
+			if (ft_strequ(room->name, ROOM->name))
 				n++;
-			if (room->x == ((t_room*)tmp->content)->x &&
-			room->y == ((t_room*)tmp->content)->y)
+			if (room->x == ROOM->x && room->y == ROOM->y)
 				c++;
 			tmp = tmp->next;
 		}
@@ -73,10 +88,13 @@ void			validate_rooms(t_list **rooms)
 
 void			validator(t_farm *farm)
 {
+	t_list	*norm;
+
 	if (farm->ants < 1)
 		show_error("Your count of ants is not normal...!");
 	if (!farm->input)
 		show_error("Seems like newline is in non valid place");
-	validate_rooms(&farm->rooms);
+	norm = farm->rooms;
+	validate_rooms(&farm->rooms, norm);
 	check_start_end(&farm->input);
 }

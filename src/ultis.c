@@ -46,25 +46,25 @@ void		print_move(t_farm *farm, t_ant *ant, t_room *room)
 
 	if (!farm->flags.c)
 		color = EOC;
-	else if (ant->N % 6 == 0)
+	else if (ant->n % 6 == 0)
 		color = B_BLUE;
-	else if (ant->N % 6 == 1)
+	else if (ant->n % 6 == 1)
 		color = B_CYAN;
-	else if (ant->N % 6 == 2)
+	else if (ant->n % 6 == 2)
 		color = B_GREEN;
-	else if (ant->N % 6 == 3)
+	else if (ant->n % 6 == 3)
 		color = B_MAGENTA;
-	else if (ant->N % 6 == 4)
+	else if (ant->n % 6 == 4)
 		color = B_RED;
-	else if (ant->N % 6 == 5)
+	else if (ant->n % 6 == 5)
 		color = B_YELLOW;
 	if (!farm->flags.c && !farm->flags.s && ant->room->rank != 1)
-		ft_printf("L%d-%s ", ant->N, room->name);
+		ft_printf("L%d-%s ", ant->n, room->name);
 	else if ((room->rank == 2 ||
 	room->rank == 2) && !farm->flags.s && ant->room->rank != 1)
-		ft_printf("%tL%d-%s %t", B_WHITE, ant->N, room->name, EOC);
+		ft_printf("%tL%d-%s %t", B_WHITE, ant->n, room->name, EOC);
 	else if (!farm->flags.s && ant->room->rank != 1)
-		ft_printf("%tL%d-%s %t", color, ant->N, room->name, EOC);
+		ft_printf("%tL%d-%s %t", color, ant->n, room->name, EOC);
 }
 
 void		print_usage(void)
@@ -72,7 +72,7 @@ void		print_usage(void)
 	ft_printf("usage: ./lem-in [-pcsrh] < map\n");
 	ft_printf("       -h    help     - show usage.\n");
 	ft_printf("       -p    paths    - show all possible paths.\n");
-	ft_printf("       -c    color 	 - paint everything in colors\n");
+	ft_printf("       -c    color    - paint everything in colors\n");
 	ft_printf("       -s    silence  - dont show madatory part\n");
 	ft_printf("       -r    result   - show result and goal\n");
 	ft_printf("       -l    leaks    - useless bonus shows leaks\n");

@@ -134,13 +134,11 @@ void				ft_lstdelast(t_list **alst);
 void				ft_lstpush(t_list **alst, t_list *new);
 void				ft_lstfree(void *list, size_t a);
 
-
 int					get_next_line(const int fd, char **line);
 
 /*
 ** ft_printf
 */
-
 
 # define RED "\x1b[31m"
 # define GREEN "\x1b[32m"
@@ -197,6 +195,5 @@ char				*implement_precision(char *str, t_orgi *params);
 char				*implement_sign(char *str,
 					long long int nb, t_orgi *params);
 char				*check_on_plus(long long int nb, t_orgi *params);
-
 
 #endif

@@ -101,12 +101,13 @@ void			print_input(t_farm *farm)
 		if (ft_strnequ((char*)list->content,
 		"#Here is the number of lines required:", 38))
 			farm->num_lines = ft_atoi((char*)list->content + 38);
-		if (!farm->flags.s)
-			ft_printf("%t%s%t", (farm->flags.c) ? B_GREEN : EOC,
+		if (!farm->flags.s && farm->flags.c)
+			ft_printf("%t%s\n%t", B_GREEN,
 			(char*)list->content, EOC);
+		else if (!farm->flags.s)
+			ft_putendl((char*)list->content);
 		list = list->next;
 	}
-	ft_putchar('\n');
 	ft_putchar('\n');
 }
 

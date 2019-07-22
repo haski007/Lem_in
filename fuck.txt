@@ -1,2 +1,0 @@
-Norme: ./src/validator.c
-Error (line 42): function validate_rooms has 28 lines

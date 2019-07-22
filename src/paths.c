@@ -113,5 +113,7 @@ void		get_paths(t_farm *farm)
 		ft_lstpush(&farm->path, ft_lstnew(list, sizeof(t_list)));
 		free(list);
 	}
+	if (!farm->path)
+		show_error("There aren't valid paths");
 	count_distanse(&farm->path);
 }

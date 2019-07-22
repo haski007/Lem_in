@@ -6,7 +6,7 @@
 /*   By: pdemian <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 21:46:09 by pdemian           #+#    #+#             */
-/*   Updated: 2019/06/28 21:46:10 by pdemian          ###   ########.fr       */
+/*   Updated: 2019/07/22 19:22:40 by pdemian          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,25 @@ static int		start_end(t_farm *farm, char **line)
 
 	rank = 0;
 	farm->ants = (farm->ants == 199191) ? ft_atoi(*line) : farm->ants;
-	if (ft_strstr(*line, "##start"))
+	if (ft_strstr(*line, "##") && !ft_strequ(*line, "##start")
+	&& !ft_strequ(*line, "##end"))
+		show_error("Whrong comand after double sharp ##...");
+	if (ft_strequ(*line, "##start"))
 		rank = 1;
-	else if (ft_strstr(*line, "##end"))
+	else if (ft_strequ(*line, "##end"))
 		rank = 2;
+	(line[0][0] == '\0') ? show_error("Newline is in non valid place") : 0;
 	ft_strdel(line);
 	if (!get_next_line(0, line))
 		return (-1);
-	ft_lstpush(&farm->input, ft_lstnew(*line, ft_strlen(*line)));
+	(line[0][0] == '\0') ? show_error("Newline is in non valid place") : 0;
+	while (line[0][0] == '#' && (rank == 1 || rank == 2))
+	{
+		ft_strdel(line);
+		if (!get_next_line(0, line))
+			return (-1);
+	}
+	ft_lstpush(&farm->input, ft_lstnew(*line, ft_strlen(*line) + 1));
 	return (rank);
 }
 
@@ -90,7 +101,7 @@ static t_room	*make_room(char *str, char rank)
 
 	room = (t_room*)malloc(sizeof(t_room));
 	i = -1;
-	while (str[++i] != ' ')
+	while (str[++i] != ' ' && str[i])
 		j = i;
 	while (str[++j])
 		if ((str[j] < '0' || str[j] > '9') && str[j] != ' ')
@@ -119,10 +130,11 @@ t_list			*save_farm(t_farm *farm)
 	int		rank;
 
 	head = NULL;
-	while (get_next_line(0, &line))
+	while (get_next_line(0, &line) > 0)
 	{
+		(line[0] == '\0') ? show_error("Newline is in non valid place") : 0;
 		rank = 0;
-		ft_lstpush(&farm->input, ft_lstnew(line, ft_strlen(line)));
+		ft_lstpush(&farm->input, ft_lstnew(line, ft_strlen(line) + 1));
 		while (line[0] == '#' || farm->ants == 199191)
 			if ((rank = start_end(farm, &line)) < 0)
 				return (head);
